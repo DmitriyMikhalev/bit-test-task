@@ -33,9 +33,9 @@ def main() -> None:
             create(commands=CREATE_COMMANDS, db_connection=connection)
             create(commands=INSERT_COMMANDS, db_connection=connection)
     except Exception:
-        print('Произошла ошибка.')
+        print("Произошла ошибка.")
     else:
-        print('Инициализация и заполнение базы выполнены успешно.')
+        print("Инициализация и заполнение базы выполнены успешно.")
 
 
 if __name__ == "__main__":

@@ -99,7 +99,7 @@ INSERT_BOOKS = [
         'Мастер и Маргарита', 'Михаил', 'Булгаков', '978-5-17-112392-5', 4
     );""",
     """INSERT INTO books (title, author_first_name, author_last_name, isbn, genre_id) VALUES (
-        'Тропа войны', 'Майн', 'Рид', '978-5-0000-0000-0', 4
+        'Тропа войны', 'Майн', 'Рид', '978-5-4444-3810-7', 4
     );""",
     """INSERT INTO books (title, author_first_name, author_last_name, isbn, genre_id) VALUES (
         'Теория всего', 'Стивен', 'Хокинг', '978-5-17-102340-9', 5

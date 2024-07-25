@@ -6,7 +6,9 @@ from .option import BaseOption
 
 class BaseMenu(metaclass=ABCMeta):
     def __init__(self, options: Iterable[BaseOption]) -> int:
-        self._options: dict[int, BaseOption] = {idx: option for idx, option in enumerate(options, start=1)}
+        self._options: dict[int, BaseOption] = {
+            idx: option for idx, option in enumerate(options, start=1)
+        }
 
     def show(self) -> None:
         print(str(self))
@@ -29,7 +31,13 @@ class FunctionalMenu(BaseMenu):
 
 
 class Menu(BaseMenu):
-    def __init__(self, options: Iterable[BaseOption], FunctionalMenues: Iterable[BaseMenu] = []):
+    def __init__(
+        self,
+        options: Iterable[BaseOption],
+        submenues: Iterable[BaseMenu] = []
+    ):
         super().__init__(options)
 
-        self._submenues: dict[int, BaseMenu] = {i: val for i, val in enumerate(FunctionalMenues, start=1)}
+        self._submenues: dict[int, BaseMenu] = {
+            i: val for i, val in enumerate(submenues, start=1)
+        }

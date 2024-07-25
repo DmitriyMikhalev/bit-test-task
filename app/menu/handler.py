@@ -16,8 +16,10 @@ class MenuHandler:
                 sys.exit(0)
             else:
                 self._chain.pop()
+                clear_console()
         elif isinstance(self.current_menu, Menu):
             self._chain.append(self.current_menu._submenues[option])
+            clear_console()
         else:
             return self.current_menu.execute(option)
 
@@ -33,7 +35,9 @@ class MenuHandler:
         return len(self.current_menu)
 
     def read_option(self):
-        msg = "Выберите опцию (0 - {}): ".format("назад" if not self.is_current_root else "выход")
+        msg = "Выберите опцию (0 - {}): ".format(
+            "назад" if not self.is_current_root else "выход"
+        )
         return read_int(
             message=msg,
             error_message="Ошибка, повторите ввод: ",
@@ -44,5 +48,3 @@ class MenuHandler:
         while True:
             self.current_menu.show()
             self.execute(option=self.read_option())
-
-            clear_console()
