@@ -23,9 +23,11 @@ def add_book_callback():
 def update_book_callback():
     books = select_books()
     write_to_file(books)
-    book_id = int(input(
-        """Список книг выведен в файл, введите идентификатор
-           изменяемой книги: """)
+    book_id = int(
+        input(
+            "Список книг выведен в файл, введите идентификатор "
+            "изменяемой книги: "
+        )
     )
     new_book = request_book_data()
 
@@ -37,9 +39,11 @@ def delete_book_callback():
     books = select_books(available_only=True)
     write_to_file(books)
 
-    book_id = int(input(
-        """Список книг выведен в файл, введите
-            идентификатор удаляемой книги: """)
+    book_id = int(
+        input(
+            "Список книг выведен в файл, введите "
+            "идентификатор удаляемой книги: "
+        )
     )
     if book_id not in books:
         raise Exception(f"Книги с id = {book_id} в БД нет.")
@@ -58,9 +62,11 @@ def update_user_callback():
     users = select_users()
     write_to_file(users)
 
-    user_id = int(input(
-        """Список читателей выведен в файл, введите
-            идентификатор изменяемого читателя: """)
+    user_id = int(
+        input(
+            "Список читателей выведен в файл, введите "
+            "идентификатор изменяемого читателя: "
+        )
     )
     user = request_user_data()
 
@@ -72,9 +78,11 @@ def delete_user_callback():
     users = select_users()
     write_to_file(users)
 
-    user_id = int(input(
-        """Список читателей выведен в файл, введите
-            идентификатор удаляемого читателя: """)
+    user_id = int(
+        input(
+            "Список читателей выведен в файл, введите "
+            "идентификатор удаляемого читателя: "
+        )
     )
     if user_id not in users:
         raise Exception(f"Книги с id = {user_id} в БД нет.")
@@ -87,9 +95,11 @@ def take_book_back_callback():
     books_taken = select_debt_books()
     write_to_file(books_taken)
 
-    taken_id = int(input(
-        """Список записей выдачи книг выведен в файл, введите
-            идентификатор закрываемого факта взятия книги: """)
+    taken_id = int(
+        input(
+            "Список записей выдачи книг выведен в файл, введите "
+            "идентификатор закрываемого факта взятия книги: "
+        )
     )
     book = books_taken[taken_id]
 
@@ -104,16 +114,20 @@ def take_book_back_callback():
 def give_book_callback():
     books = select_books(available_only=True)
     write_to_file(books)
-    book_id = int(input(
-        """Список доступных книг выведен в файл, введите
-            идентификатор выдаваемой книги: """)
+    book_id = int(
+        input(
+            "Список доступных книг выведен в файл, введите "
+            "идентификатор выдаваемой книги: "
+        )
     )
 
     users = select_users()
     write_to_file(users)
-    user_id = int(input(
-        """Список читателей выведен в файл, введите идентификатор
-            читателя, которому выдается книга: """)
+    user_id = int(
+        input(
+            "Список читателей выведен в файл, введите идентификатор "
+            "читателя, которому выдается книга: "
+        )
     )
 
     days_interval = int(
@@ -125,5 +139,8 @@ def give_book_callback():
         book_id=book_id,
         days_interval=days_interval
     )
+
+    if book_id not in books:
+        raise Exception("Книга недоступна к выдаче.")
 
     give_book(**book_takes.model_dump())
