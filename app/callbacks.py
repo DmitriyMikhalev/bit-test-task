@@ -1,3 +1,5 @@
+from typing import Callable
+
 from queries import (
     insert,
     update,
@@ -31,19 +33,20 @@ from reports import (
 )
 
 
-report_callback = callback(REPORT_MESSAGE)
+report_callback: Callable = callback(REPORT_MESSAGE)
 
 
 @callback()
-def add_book_callback():
-    book = request_book_data()
+def add_book_callback() -> None:
+    book: models.BookModel = request_book_data()
     insert(book.model_dump(), "books")
 
 
 @callback()
-def update_book_callback():
+def update_book_callback() -> None:
     books = select_books()
     write_to_file(books)
+
     book_id = int(
         input(
             "Список книг выведен в файл, введите идентификатор "
@@ -56,7 +59,7 @@ def update_book_callback():
 
 
 @callback()
-def delete_book_callback():
+def delete_book_callback() -> None:
     books = select_books(available_only=True)
     write_to_file(books)
 
@@ -73,13 +76,13 @@ def delete_book_callback():
 
 
 @callback()
-def add_user_callback():
-    user = request_user_data()
+def add_user_callback() -> None:
+    user: models.UserModel = request_user_data()
     insert(user.model_dump(), "users")
 
 
 @callback()
-def update_user_callback():
+def update_user_callback() -> None:
     users = select_users()
     write_to_file(users)
 
@@ -95,7 +98,7 @@ def update_user_callback():
 
 
 @callback()
-def delete_user_callback():
+def delete_user_callback() -> None:
     users = select_users()
     write_to_file(users)
 
@@ -112,7 +115,7 @@ def delete_user_callback():
 
 
 @callback()
-def take_book_back_callback():
+def take_book_back_callback() -> None:
     books_taken = select_debt_books()
     write_to_file(books_taken)
 
@@ -132,7 +135,7 @@ def take_book_back_callback():
 
 
 @callback()
-def give_book_callback():
+def give_book_callback() -> None:
     books = select_books(available_only=True)
     write_to_file(books)
     book_id = int(
@@ -168,14 +171,13 @@ def give_book_callback():
 
 
 @report_callback
-def show_books_callback():
+def show_books_callback() -> None:
     books = select_books()
     write_to_file(books)
 
 
 @report_callback
-def show_count_readers_books_callback():
-    print(type(REPORT_COUNT_OF_BOOKS))
+def show_count_readers_books_callback() -> None:
     books_count = run_report_query(
         REPORT_COUNT_OF_BOOKS,
         ("Количество книг",)
@@ -188,7 +190,7 @@ def show_count_readers_books_callback():
 
 
 @report_callback
-def show_taken_books_by_user_callback():
+def show_taken_books_by_user_callback() -> None:
     books_by_user = run_report_query(
         REPORT_BOOKS_TAKEN_BY_USER,
         (
@@ -202,7 +204,7 @@ def show_taken_books_by_user_callback():
 
 
 @report_callback
-def show_count_in_hands_by_user_callback():
+def show_count_in_hands_by_user_callback() -> None:
     books_in_hands = run_report_query(
         REPORT_BOOKS_IN_HANDS_BY_USER,
         (
@@ -216,7 +218,7 @@ def show_count_in_hands_by_user_callback():
 
 
 @report_callback
-def show_last_visist_by_user_callback():
+def show_last_visist_by_user_callback() -> None:
     last_visits = run_report_query(
         REPORT_LAST_VISIT_BY_USER,
         (
@@ -230,7 +232,7 @@ def show_last_visist_by_user_callback():
 
 
 @report_callback
-def show_most_popular_author_callback():
+def show_most_popular_author_callback() -> None:
     author = run_report_query(
         REPORT_MOST_POPULAR_AUTHOR,
         (
@@ -243,7 +245,7 @@ def show_most_popular_author_callback():
 
 
 @report_callback
-def show_genres_top_callback():
+def show_genres_top_callback() -> None:
     genres = run_report_query(
         REPORT_GENRES_TOP,
         (
@@ -255,7 +257,7 @@ def show_genres_top_callback():
 
 
 @report_callback
-def show_overdued_takes_callback():
+def show_overdued_takes_callback() -> None:
     overdued_takes = run_report_query(
         REPORT_OVERDUED_TAKES,
         (
@@ -280,7 +282,7 @@ def show_overdued_takes_callback():
     msg="\nОтчет загружен в файл .geojson, для просмотра данных на "
         "карте используйте, например, https://geojson.io/\n"
 )
-def show_given_books_on_map_callback():
+def show_given_books_on_map_callback() -> None:
     given_books = run_report_query(
         REPORT_GIVEN_BOOKS,
         (

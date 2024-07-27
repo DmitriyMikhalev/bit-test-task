@@ -32,10 +32,10 @@ def insert(obj_data: dict[str, int | str], table_name: str) -> None:
 
     with db_connection.cursor() as cursor:
         query = sql.SQL("INSERT INTO {} ({}) VALUES ({});").format(
-                sql.Identifier(table_name),
-                sql.SQL(", ").join(map(sql.Identifier, keys)),
-                sql.SQL(", ").join(map(sql.Literal, values))
-               )
+            sql.Identifier(table_name),
+            sql.SQL(", ").join(map(sql.Identifier, keys)),
+            sql.SQL(", ").join(map(sql.Literal, values))
+        )
         cursor.execute(query)
         db_connection.commit()
 
@@ -152,7 +152,7 @@ def select_users(no_debts_only: bool = False) -> dict[int, dict]:
         return objects
 
 
-def update(obj_data: dict[str, int | str], table_name: str, id: int):
+def update(obj_data: dict[str, int | str], table_name: str, id: int) -> None:
     with db_connection.cursor() as cursor:
         params = [
             sql.SQL("{} = {}").format(
@@ -161,25 +161,25 @@ def update(obj_data: dict[str, int | str], table_name: str, id: int):
             ) for key, value in obj_data.items()
         ]
         query = sql.SQL("UPDATE {} SET {} WHERE id = {};").format(
-                sql.Identifier(table_name),
-                sql.SQL(", ").join(params),
-                sql.Literal(id)
-               )
+            sql.Identifier(table_name),
+            sql.SQL(", ").join(params),
+            sql.Literal(id)
+        )
         cursor.execute(query)
         db_connection.commit()
 
 
-def delete(table_name: str, id: int):
+def delete(table_name: str, id: int) -> None:
     with db_connection.cursor() as cursor:
         query = sql.SQL("DELETE FROM {} WHERE id = {};").format(
-                sql.Identifier(table_name),
-                sql.Literal(id)
-               )
+            sql.Identifier(table_name),
+            sql.Literal(id)
+        )
         cursor.execute(query)
         db_connection.commit()
 
 
-def give_book(book_id: int, user_id: int, days_interval: int):
+def give_book(book_id: int, user_id: int, days_interval: int) -> None:
     with db_connection.cursor() as cursor:
         update_book_query = sql.SQL(
             """
@@ -237,7 +237,7 @@ def give_book(book_id: int, user_id: int, days_interval: int):
         db_connection.commit()
 
 
-def take_book(taken_id: int, book_id: int, user_id: int):
+def take_book(taken_id: int, book_id: int, user_id: int) -> None:
     with db_connection.cursor() as cursor:
         update_book_query = sql.SQL(
             """
@@ -277,7 +277,7 @@ def take_book(taken_id: int, book_id: int, user_id: int):
         db_connection.commit()
 
 
-def run_report_query(query: str, returning_columns: Iterable[str]):
+def run_report_query(query: str, returning_columns: Iterable[str]) -> None:
     with db_connection.cursor() as cursor:
         cursor.execute(query)
 

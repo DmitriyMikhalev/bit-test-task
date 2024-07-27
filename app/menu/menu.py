@@ -5,7 +5,7 @@ from .option import BaseOption
 
 
 class BaseMenu(metaclass=ABCMeta):
-    def __init__(self, options: Iterable[BaseOption]) -> int:
+    def __init__(self, options: Iterable[BaseOption]) -> None:
         self._options: dict[int, BaseOption] = {
             idx: option for idx, option in enumerate(options, start=1)
         }
@@ -13,7 +13,8 @@ class BaseMenu(metaclass=ABCMeta):
     def show(self) -> None:
         print(str(self))
 
-    def __repr__(self): return self.__class__.__name__
+    def __repr__(self) -> str:
+        return self.__class__.__name__
 
     def __len__(self) -> int:
         return len(self._options)
@@ -23,7 +24,7 @@ class BaseMenu(metaclass=ABCMeta):
 
 
 class FunctionalMenu(BaseMenu):
-    def __init__(self, options: Iterable[BaseOption]):
+    def __init__(self, options: Iterable[BaseOption]) -> None:
         super().__init__(options)
 
     def execute(self, option: int) -> None:
@@ -35,7 +36,7 @@ class Menu(BaseMenu):
         self,
         options: Iterable[BaseOption],
         submenues: Iterable[BaseMenu] = []
-    ):
+    ) -> None:
         super().__init__(options)
 
         self._submenues: dict[int, BaseMenu] = {
