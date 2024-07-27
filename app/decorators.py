@@ -1,7 +1,11 @@
 from typing import Callable
 from functools import wraps
+import logging
 
 from pydantic import ValidationError
+
+
+logger = logging.getLogger("logger")
 
 
 def callback(msg: str | None = "\nОперация успешно завершена.\n") -> Callable:
@@ -11,10 +15,10 @@ def callback(msg: str | None = "\nОперация успешно заверше
             try:
                 func()
             except ValidationError as e:
-                print(e)
+                logger.error(e)
                 print("\nВведенные данные некорректны, отмена операции.\n")
             except Exception as e:
-                print(e)
+                logger.error(e)
                 print("\nПроизошла непредвиденная ошибка, отмена операции.\n")
             else:
                 print(msg)

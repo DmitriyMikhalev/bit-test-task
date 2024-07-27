@@ -1,3 +1,6 @@
+import logging
+import logging.handlers
+
 from callbacks import (
     add_book_callback,
     update_book_callback,
@@ -19,6 +22,19 @@ from callbacks import (
 )
 from menu import option, menu, handler
 
+
+logger = logging.getLogger("logger")
+logger.setLevel(logging.DEBUG)
+
+logger_handler = logging.FileHandler("log.log", encoding="utf-8")
+logger_handler.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter(
+    "{asctime} - {name} - {levelname} - {message}",
+    style="{"
+)
+logger_handler.setFormatter(formatter)
+logger.addHandler(logger_handler)
 
 books_menu = menu.FunctionalMenu(
     options=[
