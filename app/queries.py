@@ -1,6 +1,9 @@
 import os
+from typing import Iterable
+
 import psycopg2
 from psycopg2 import sql
+
 
 db_connection = psycopg2.connect(
     database=os.getenv("POSTGRES_DB"),
@@ -17,10 +20,9 @@ def select_genres() -> dict[int, dict]:
 
         objects = {}
         for row in cursor.fetchall():
-            objects[row[0]] = {
-                "Идентификатор": row[0],
-                "Название": row[1]
-            }
+            objects[row[0]] = dict(
+                zip(("Идентификатор", "Название"), row)
+            )
         return objects
 
 
@@ -47,6 +49,7 @@ def select_books(available_only: bool = False) -> dict[int, dict]:
                 books.author_first_name,
                 books.author_last_name,
                 books.isbn,
+                books.takes_count,
                 CASE WHEN books.is_available then 'Да' else 'Нет' END,
                 genres.id as genre_id,
                 genres.title
@@ -57,16 +60,22 @@ def select_books(available_only: bool = False) -> dict[int, dict]:
 
         objects = {}
         for row in cursor.fetchall():
-            objects[row[0]] = {
-                "Идентификатор": row[0],
-                "Название": row[1],
-                "Имя автора": row[2],
-                "Фамилия автора": row[3],
-                "ISBN": row[4],
-                "Доступна к выдаче": row[5],
-                "Идентификатор жанра": row[6],
-                "Название жанра": row[7],
-            }
+            objects[row[0]] = dict(
+                zip(
+                    (
+                        "Идентификатор",
+                        "Название",
+                        "Имя автора",
+                        "Фамилия автора",
+                        "ISBN",
+                        "Количество прочтений",
+                        "Доступна к выдаче",
+                        "Идентификатор жанра",
+                        "Название жанра",
+                    ),
+                    row
+                )
+            )
         return objects
 
 
@@ -81,7 +90,8 @@ def select_debt_books() -> dict[int, dict]:
                 users.first_name,
                 users.last_name,
                 books.id,
-                books.isbn
+                books.isbn,
+                books.takes_count,
             FROM book_takes
             JOIN books ON book_takes.id = books.id
             JOIN users ON users.id = book_takes.user_id
@@ -89,16 +99,22 @@ def select_debt_books() -> dict[int, dict]:
 
         objects = {}
         for row in cursor.fetchall():
-            objects[row[0]] = {
-                "Идентификатор факта взятия": row[0],
-                "Название книги": row[1],
-                "Плановое время возврата книги": row[2],
-                "Идентификатор читающего": row[3],
-                "Имя читающего": row[4],
-                "Фамилия читающего": row[5],
-                "Идентификатор книги": row[6],
-                "ISBN книги": row[7],
-            }
+            objects[row[0]] = dict(
+                zip(
+                    (
+                        "Идентификатор факта взятия",
+                        "Название книги",
+                        "Плановое время возврата книги",
+                        "Идентификатор читающего",
+                        "Имя читающего",
+                        "Фамилия читающего",
+                        "Идентификатор книги",
+                        "ISBN книги",
+                        "Количество взятий книги",
+                    ),
+                    row
+                )
+            )
         return objects
 
 
@@ -119,15 +135,20 @@ def select_users(no_debts_only: bool = False) -> dict[int, dict]:
 
         objects = {}
         for row in cursor.fetchall():
-            objects[row[0]] = {
-                "Идентификатор": row[0],
-                "Имя читателя": row[1],
-                "Фамилия читателя": row[2],
-                "Широта адреса читателя": row[3],
-                "Долгота адреса читателя": row[4],
-                "Количество не возвращенных книг": row[5],
-                "Дата последнего посещения": row[6],
-            }
+            objects[row[0]] = dict(
+                zip(
+                    (
+                        "Идентификатор",
+                        "Имя читателя",
+                        "Фамилия читателя",
+                        "Широта адреса читателя",
+                        "Долгота адреса читателя",
+                        "Количество не возвращенных книг",
+                        "Дата последнего посещения",
+                    ),
+                    row
+                )
+            )
         return objects
 
 
@@ -162,14 +183,15 @@ def give_book(book_id: int, user_id: int, days_interval: int):
     with db_connection.cursor() as cursor:
         update_book_query = sql.SQL(
             """
-            UPDATE {}
-            SET {} = false
-            WHERE id = {};
+            UPDATE {table}
+            SET {is_available} = false, {takes_count} = {takes_count} + 1
+            WHERE id = {book_id};
             """
         ).format(
-            sql.Identifier("books"),
-            sql.Identifier("is_available"),
-            sql.Literal(book_id)
+            table=sql.Identifier("books"),
+            is_available=sql.Identifier("is_available"),
+            takes_count=sql.Identifier("takes_count"),
+            book_id=sql.Literal(book_id)
         )
 
         update_user_query = sql.SQL(
@@ -232,15 +254,11 @@ def take_book(taken_id: int, book_id: int, user_id: int):
         update_user_query = sql.SQL(
             """
             UPDATE {}
-            SET
-                {} = {} - 1,
-                {} = current_timestamp
+            SET {} = current_timestamp
             WHERE id = {};
             """
         ).format(
             sql.Identifier("users"),
-            sql.Identifier("books_taken_count"),
-            sql.Identifier("books_taken_count"),
             sql.Identifier("last_visit"),
             sql.Literal(user_id)
         )
@@ -257,3 +275,13 @@ def take_book(taken_id: int, book_id: int, user_id: int):
         for query in update_book_query, update_user_query, delete_take_query:
             cursor.execute(query)
         db_connection.commit()
+
+
+def run_report_query(query: str, returning_columns: Iterable[str]):
+    with db_connection.cursor() as cursor:
+        cursor.execute(query)
+
+        objects = {}
+        for row in cursor.fetchall():
+            objects[row[0]] = dict(zip(returning_columns, row))
+        return objects

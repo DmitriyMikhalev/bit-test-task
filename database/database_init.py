@@ -32,7 +32,8 @@ def main() -> None:
         ) as connection:
             create(commands=CREATE_COMMANDS, db_connection=connection)
             create(commands=INSERT_COMMANDS, db_connection=connection)
-    except Exception:
+    except Exception as e:
+        print(e)
         print("Произошла ошибка.")
     else:
         print("Инициализация и заполнение базы выполнены успешно.")

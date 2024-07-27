@@ -13,6 +13,7 @@ CREATE_TABLE_BOOKS = """
         author_last_name VARCHAR NOT NULL,
         isbn VARCHAR NOT NULL UNIQUE,
         is_available BOOLEAN NOT NULL DEFAULT true,
+        takes_count INTEGER NOT NULL DEFAULT 0,
         genre_id INTEGER NOT NULL,
         FOREIGN KEY (genre_id) REFERENCES genres(id) ON DELETE RESTRICT,
         CONSTRAINT unique_author_book UNIQUE(title, author_first_name, author_last_name)

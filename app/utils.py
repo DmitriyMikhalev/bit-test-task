@@ -1,4 +1,5 @@
 import os
+import simplejson
 from typing import Iterable
 from pathlib import Path
 
@@ -13,6 +14,7 @@ DOTENV_PATH = Path(__file__).resolve().parent.parent.joinpath(".env")
 load_dotenv(dotenv_path=DOTENV_PATH)
 
 OUTPUT_PATH = os.getenv("OUTPUT_PATH")
+GEOJSON_PATH = os.getenv("GEOJSON_PATH")
 
 
 def convert_obj_to_str(obj: dict[int, dict]) -> str:
@@ -53,3 +55,37 @@ def request_book_data() -> BookModel:
     ).strip()
 
     return BookModel(**new_book_data)
+
+
+def convert_dict_to_geojson(objs: dict[int, dict]) -> dict:
+    features = []
+    for obj in objs.values():
+        latitude = obj.pop("Широта адреса читателя")
+        longitude = obj.pop("Долгота адреса читателя")
+
+        features.append({
+            "type": "Feature",
+            "properties": obj,
+            "geometry": {
+                "coordinates": [latitude, longitude],
+                "type": "Point"
+            },
+        })
+
+    return {
+        "type": "FeatureCollection",
+        "features": features
+    }
+
+
+def write_to_geojson_file(objs: Iterable[dict]) -> None:
+    objs = convert_dict_to_geojson(objs)
+    with open(GEOJSON_PATH, mode="w", encoding="utf-8") as file:
+        simplejson.dump(
+            obj=objs,
+            fp=file,
+            indent=4,
+            default=str,
+            ensure_ascii=False,
+            encoding="utf-8"
+        )

@@ -6,7 +6,16 @@ from callbacks import (
     update_user_callback,
     delete_user_callback,
     take_book_back_callback,
-    give_book_callback
+    give_book_callback,
+    show_books_callback,
+    show_count_readers_books_callback,
+    show_taken_books_by_user_callback,
+    show_count_in_hands_by_user_callback,
+    show_last_visist_by_user_callback,
+    show_most_popular_author_callback,
+    show_genres_top_callback,
+    show_overdued_takes_callback,
+    show_given_books_on_map_callback
 )
 from menu import option, menu, handler
 
@@ -58,8 +67,45 @@ book_takes_menu = menu.FunctionalMenu(
     ]
 )
 
-reports_menu = menu.Menu(
-    options=[]
+reports_menu = menu.FunctionalMenu(
+    options=[
+        option.FunctionalMenuOption(
+            "Список книг;",
+            show_books_callback
+        ),
+        option.FunctionalMenuOption(
+            "Количество читателей, книг;",
+            show_count_readers_books_callback
+        ),
+        option.FunctionalMenuOption(
+            "Сколько книг брал каждый читатель за все время;",
+            show_taken_books_by_user_callback
+        ),
+        option.FunctionalMenuOption(
+            "Сколько книг сейчас находится на руках у каждого читателя;",
+            show_count_in_hands_by_user_callback
+        ),
+        option.FunctionalMenuOption(
+            "Дата последнего посещения читателями библиотеки;",
+            show_last_visist_by_user_callback
+        ),
+        option.FunctionalMenuOption(
+            "Самый читаемый автор;",
+            show_most_popular_author_callback
+        ),
+        option.FunctionalMenuOption(
+            "Самый популярные жанры по убыванию;",
+            show_genres_top_callback
+        ),
+        option.FunctionalMenuOption(
+            "Информация о просроченных сдачах книг;",
+            show_overdued_takes_callback
+        ),
+        option.FunctionalMenuOption(
+            "Информация о выданных книгах на карте;",
+            show_given_books_on_map_callback
+        ),
+    ]
 )
 
 main_menu = menu.Menu(
@@ -67,8 +113,9 @@ main_menu = menu.Menu(
         option.MenuOption("Манипулирование книгами;"),
         option.MenuOption("Манипулирование читателями;"),
         option.MenuOption("Манипулирование взятиями/возвращениями книг;"),
+        option.MenuOption("Создание отчетов.")
     ],
-    submenues=[books_menu, users_menu, book_takes_menu]
+    submenues=[books_menu, users_menu, book_takes_menu, reports_menu]
 )
 
 menu_handler = handler.MenuHandler(root_menu=main_menu)
