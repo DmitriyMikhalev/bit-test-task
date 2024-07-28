@@ -8,7 +8,7 @@ from pydantic import ValidationError
 logger = logging.getLogger("logger")
 
 
-def callback(msg: str | None = "\nОперация успешно завершена.\n") -> Callable:
+def callback(msg: str = "\nОперация успешно завершена.\n") -> Callable:
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
         def wrapped() -> Callable:
