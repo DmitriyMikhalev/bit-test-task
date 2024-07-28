@@ -11,7 +11,7 @@ logger = logging.getLogger("logger")
 def callback(msg: str = "\nОперация успешно завершена.\n") -> Callable:
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
-        def wrapped() -> Callable:
+        def wrapped() -> None:
             try:
                 func()
             except ValidationError as e:
