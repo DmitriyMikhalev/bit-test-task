@@ -1,8 +1,15 @@
 import os
 from typing import Iterable
+from pathlib import Path
 
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql
+
+
+DOTENV_PATH = Path(__file__).resolve().parent.parent.joinpath(".env")
+
+load_dotenv(dotenv_path=DOTENV_PATH)
 
 
 db_connection = psycopg2.connect(

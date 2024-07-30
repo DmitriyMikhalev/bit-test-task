@@ -3,15 +3,9 @@ import simplejson
 from typing import Iterable
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 from queries import select_genres
 from validators.models import UserModel, BookModel
 
-
-DOTENV_PATH = Path(__file__).resolve().parent.parent.joinpath(".env")
-
-load_dotenv(dotenv_path=DOTENV_PATH)
 
 OUTPUT_PATH = os.getenv("OUTPUT_PATH")
 GEOJSON_PATH = os.getenv("GEOJSON_PATH")

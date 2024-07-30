@@ -9,7 +9,7 @@ from create_tables import CREATE_COMMANDS
 from fixtures import INSERT_COMMANDS
 from pathlib import Path
 
-DOTENV_PATH = Path(__file__).resolve().parent.joinpath(".env")
+DOTENV_PATH = Path(__file__).resolve().parent.parent.joinpath(".env")
 
 load_dotenv(dotenv_path=DOTENV_PATH)
 
