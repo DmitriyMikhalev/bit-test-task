@@ -98,7 +98,7 @@ def select_debt_books() -> dict[int, dict]:
                 users.last_name,
                 books.id,
                 books.isbn,
-                books.takes_count,
+                books.takes_count
             FROM book_takes
             JOIN books ON book_takes.id = books.id
             JOIN users ON users.id = book_takes.user_id
